@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /users/{userId} {
+      allow read, write: if (isAuthenticated() && request.auth.uid == userId) || isAdmin();
+    }
+    
+    match /drivers/{driverId} {
+      allow read: if isAuthenticated();
+      allow write: if (isAuthenticated() && request.auth.uid == driverId) || isAdmin();
+    }
+    
+    match /admins/{adminId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    match /trips/{tripId} {
+      // Allow reading: own trips, assigned trips, Finding trips (for drivers to discover), or admin
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || 
+        resource.data.driverId == request.auth.uid || 
+        resource.data.status == 'Finding' ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || resource.data.driverId == request.auth.uid || request.resource.data.driverId == request.auth.uid || resource.data.status == 'Finding' || isAdmin());
+      
+      match /messages/{messageId} {
+        allow read, write: if isAuthenticated() && (
+          get(/databases/$(database)/documents/trips/$(tripId)).data.userId == request.auth.uid || 
+          get(/databases/$(database)/documents/trips/$(tripId)).data.driverId == request.auth.uid || 
+          isAdmin()
+        );
+      }
+    }
+
+    match /sosAlerts/{alertId} {
+      allow read: if isAdmin();
+      allow write: if isAuthenticated();
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

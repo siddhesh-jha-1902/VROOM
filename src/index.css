@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* LIGHT THEME VARIABLES - Vibrant Premium Sky Blue aesthetic */
+  --color-background: #e0f2fe; /* Sky-100 */
+  --color-surface: #bae6fd;    /* Sky-200 */
+  --color-primary: #0284c7;    /* Sky-600 */
+  --color-primary-hover: #0369a1; 
+  --color-text-main: #0c4a6e;  /* Sky-900 */
+  --color-text-muted: #0284c7; /* Sky-600 */
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-shadow: 0 8px 32px 0 rgba(12, 74, 110, 0.1);
+  --map-bg: #bae6fd;
+}
+
+.dark {
+  /* DARK THEME VARIABLES */
+  --color-background: #030712;
+  --color-surface: #111827;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --glass-bg: rgba(17, 24, 39, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --map-bg: #030712;
+}
+
+html, body {
+  /* PREMIUM THEME TRANSITION - Material ease blending */
+  transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Base Tailwind Extenders that inherit transitons naturally */
+.text-text-muted { color: var(--color-text-muted); transition: color 0.8s ease; }
+.bg-background { background-color: var(--color-background); transition: background-color 0.8s ease; }
+.text-text-main { color: var(--color-text-main); transition: color 0.8s ease; }
+.bg-primary { background-color: var(--color-primary); }
+.hover\:bg-primary-hover:hover { background-color: var(--color-primary-hover); }
+.text-primary { color: var(--color-primary); }
+.text-primary-hover { color: var(--color-primary-hover); }
+.bg-surface { background-color: var(--color-surface); transition: background-color 0.8s ease; }
+
+/* Premium Text Gradient */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), #10b981, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Premium Glassmorphism Utility Classes */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  transition: background 0.8s ease, border-color 0.8s ease;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1.5rem;
+  transition: background 0.8s ease, border-color 0.8s ease, box-shadow 0.8s ease;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Accessibility: Global Focus Styles */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+input:focus-visible, button:focus-visible, a:focus-visible {
+  border-radius: inherit;
+}
