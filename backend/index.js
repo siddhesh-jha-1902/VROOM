@@ -27,17 +27,23 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize Firebase Admin SDK
-// You must have FIREBASE_SERVICE_ACCOUNT_PATH or credentials set in your environment
 try {
-  const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || './firebase-service-account.json';
-  const serviceAccount = require(serviceAccountPath);
+  let serviceAccount;
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    // For cloud hosting (Render, etc.) — service account JSON stored in env var
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } else {
+    // For local development — load from file
+    const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || './firebase-service-account.json';
+    serviceAccount = require(serviceAccountPath);
+  }
   
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });
   console.log('Firebase Admin SDK initialized successfully.');
 } catch (error) {
-  console.error('Failed to initialize Firebase Admin SDK. Please ensure firebase-service-account.json exists:', error.message);
+  console.error('Failed to initialize Firebase Admin SDK:', error.message);
 }
 
 // Endpoint to mint Firebase Custom Token for a Clerk-authenticated user
